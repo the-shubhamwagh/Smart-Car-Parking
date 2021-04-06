@@ -1,0 +1,130 @@
+#include <SoftwareSerial.h>
+ 
+float duration,distance;
+int i;
+
+int s2=digitalRead(12);
+int s3=digitalRead(13);
+
+void setup() {
+ 
+pinMode(11,INPUT);  //s1
+pinMode(12,INPUT);  //s2
+pinMode(13,INPUT);  //s3
+pinMode(10, OUTPUT); //trigpin
+pinMode(9, INPUT);  //Echopin
+pinMode(3, OUTPUT);  //s1 led
+pinMode(4, OUTPUT);  //s2 led
+pinMode(5, OUTPUT);  //s3 led
+pinMode(7, OUTPUT);  //RED SIGNAL
+pinMode(6, OUTPUT);  //Motor  
+  
+  Serial.begin(9600);
+}
+
+void loop() {
+ 
+long duration, inches, cm;
+ digitalWrite(10, LOW);
+  delayMicroseconds(2);
+  digitalWrite(10, HIGH);
+  delayMicroseconds(5);
+  digitalWrite(10, LOW);
+
+ duration = pulseIn(9, HIGH);
+
+  inches = microsecondsToInches(duration);
+  cm = microsecondsToCentimeters(duration);
+  
+//  Serial.print(inches);
+//  Serial.print("in, ");
+ Serial.print(cm);
+  Serial.print("cm,");
+  
+  Serial.print(digitalRead(11));
+  Serial.print(digitalRead(12));
+  Serial.print(digitalRead(13));
+  Serial.println();
+
+if(cm<30)
+{
+  if(digitalRead(11)==1)
+  {
+      
+      digitalWrite(3,HIGH);
+        Serial.print("NO Car at S1"); 
+        
+  }
+else if(digitalRead(11)==0)
+  {
+     digitalWrite(3,LOW);
+  }
+
+  if(digitalRead(12)==1)
+  {
+      Serial.print("NO Car at S2 ");    
+      
+      digitalWrite(4,HIGH);
+           
+  }
+
+  else if(digitalRead(12)==0)
+  {
+     digitalWrite(4,LOW);
+  }
+
+
+  if(digitalRead(13)==1)
+  {
+      Serial.print("NO Car at S3 ");         
+      digitalWrite(5,HIGH);
+  
+  }
+
+  else if(digitalRead(13)==0)
+  {
+     digitalWrite(5,LOW);
+  }
+
+
+  if(digitalRead(11)==0&&digitalRead(12)==0&&digitalRead(13)==0)
+  {
+    Serial.print("Parking Full");
+     digitalWrite(8,HIGH);
+    delay(1000);
+     digitalWrite(8,LOW);
+   
+  }
+
+  if(digitalRead(11)==1||digitalRead(12)==1||digitalRead(13)==1)
+  {
+   digitalWrite(6,HIGH); 
+   
+    delay(2000);
+     digitalWrite(6,LOW); 
+   
+  }
+}
+
+else
+{
+  delay(5000);
+     digitalWrite(3,LOW);
+  digitalWrite(4,LOW);
+  digitalWrite(5,LOW);
+  
+ }
+}
+
+
+long microsecondsToInches(long microseconds)
+{
+ 
+  return microseconds / 74 / 2;
+}
+
+long microsecondsToCentimeters(long microseconds)
+{
+  
+  return microseconds / 29 / 2;
+}
